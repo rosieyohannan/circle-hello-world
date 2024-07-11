@@ -1,1 +1,1 @@
-# circle-hello-world
+# CircleCI hello world example
