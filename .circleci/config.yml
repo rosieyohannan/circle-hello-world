@@ -1,9 +1,23 @@
 version: 2.1
 
 orbs:
-    hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
+  tests: circleci/tests@1.0.0
+
+jobs:
+  build:
+    docker:
+      - image: cimg/go:1.21.4
+    parallelism: 4
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          command: go list ./... | circleci tests run --command "xargs gotestsum --junitfile junit.xml --format testname --" --split-by=timings --timings-type=name
+      - store_test_results:
+          path: junit.xml
 
 workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+  version: 2
+  build-and-test:
+    jobs:
+      - build
