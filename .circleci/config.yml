@@ -1,32 +1,42 @@
 version: 2.1
 
 jobs:
-  test-cache-restore:
+  create-cache:
     docker:
       - image: cimg/base:2024.01
     steps:
       - checkout
-      
-      # First, create a directory that will be our target
       - run:
-          name: Create target directory
+          name: Create cache content
           command: |
             mkdir -p /tmp/cache-test
-            echo "This is a test file" > /tmp/cache-test/test.txt
-      
-      # Try to restore cache to the existing directory
-      - restore_cache:
-          keys:
-            - test-cache-v1
-      
-      # Save the cache (this will run after the restore attempt)
+            echo "This is the original cache content" > /tmp/cache-test/test.txt
       - save_cache:
           key: test-cache-v1
           paths:
             - /tmp/cache-test
 
+  test-cache-restore:
+    docker:
+      - image: cimg/base:2024.01
+    steps:
+      - checkout
+      # First, create a directory that will be our target
+      - run:
+          name: Create target directory
+          command: |
+            mkdir -p /tmp/cache-test
+            echo "This is a different file" > /tmp/cache-test/test.txt
+      # Try to restore cache to the existing directory
+      - restore_cache:
+          keys:
+            - test-cache-v1
+
 workflows:
   version: 2
   test-cache:
     jobs:
-      - test-cache-restore
+      - create-cache
+      - test-cache-restore:
+          requires:
+            - create-cache
