@@ -1,9 +1,32 @@
 version: 2.1
 
-orbs:
-    hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
+jobs:
+  test-cache-restore:
+    docker:
+      - image: cimg/base:2024.01
+    steps:
+      - checkout
+      
+      # First, create a directory that will be our target
+      - run:
+          name: Create target directory
+          command: |
+            mkdir -p /tmp/cache-test
+            echo "This is a test file" > /tmp/cache-test/test.txt
+      
+      # Try to restore cache to the existing directory
+      - restore_cache:
+          keys:
+            - test-cache-v1
+      
+      # Save the cache (this will run after the restore attempt)
+      - save_cache:
+          key: test-cache-v1
+          paths:
+            - /tmp/cache-test
 
 workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+  version: 2
+  test-cache:
+    jobs:
+      - test-cache-restore
