@@ -5,26 +5,26 @@ import (
 	"time"
 )
 
-func TestAddition(t *testing.T) {
+func TestAdd(t *testing.T) {
 	tests := []struct {
 		name     string
 		a, b     int
 		expected int
 	}{
 		{
-			name:     "TestAddition_PositiveNumbers",
+			name:     "TestAdd_PositiveNumbers",
 			a:        1,
 			b:        2,
 			expected: 3,
 		},
 		{
-			name:     "TestAddition_NegativeNumbers",
+			name:     "TestAdd_NegativeNumbers",
 			a:        -1,
 			b:        -2,
 			expected: -3,
 		},
 		{
-			name:     "TestAddition_MixedNumbers",
+			name:     "TestAdd_MixedNumbers",
 			a:        -1,
 			b:        2,
 			expected: 1,
@@ -35,7 +35,7 @@ func TestAddition(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Simulate some work
 			time.Sleep(100 * time.Millisecond)
-			result := tt.a + tt.b
+			result := Add(tt.a, tt.b)
 			if result != tt.expected {
 				t.Errorf("got %d, want %d", result, tt.expected)
 			}
