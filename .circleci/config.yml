@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  my-orb: https://raw.githubusercontent.com/rosieyohannan/circle-hello-world/refs/heads/master/.circleci/my-orb.yml
+
 jobs:
   build:
     docker:
@@ -19,5 +22,5 @@ workflows:
     jobs:
       - build
       - test:
-          requires:
-            - build
+        override-with: my-orb/custom-test
+        requires: build
