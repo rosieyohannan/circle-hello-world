@@ -23,4 +23,5 @@ workflows:
       - build
       - test:
           override-with: my-orb/custom-test
-          requires: build
+          requires: 
+            - build
