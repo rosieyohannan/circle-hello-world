@@ -1,0 +1,11 @@
+# my-orb
+version: 2.1
+
+jobs:
+  custom-test:
+    docker:
+      - image: cimg/node:18.0
+    steps:
+      - checkout
+      - run: echo "Running custom test suite"
+      - run: npm test
