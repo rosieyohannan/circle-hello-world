@@ -1,9 +1,27 @@
 version: 2.1
 
 orbs:
-    hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
+  my-orb: https://raw.githubusercontent.com/rosieyohannan/circle-hello-world/refs/heads/master/.circleci/my-orb.yml
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:2023.03
+    steps:
+      - checkout
+      - run: echo "Building application"
+  test:
+    docker:
+      - image: cimg/base:2023.03
+    steps:
+      - checkout
+      - run: echo "Running standard tests"
 
 workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+  main:
+    jobs:
+      - build
+      - test:
+          override-with: my-orb/custom-test
+          requires: 
+            - build
