@@ -1,9 +1,8 @@
 version: 2.1
 
-orbs:
-    hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
-
-workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+jobs:
+  build:
+    docker:
+      - image: cimg/base:2023.03
+    steps:
+      - run: circleci --help
