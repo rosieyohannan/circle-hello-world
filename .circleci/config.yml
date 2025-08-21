@@ -5,4 +5,4 @@ jobs:
     docker:
       - image: cimg/base:2023.03
     steps:
-      - run: circleci --help
+      - run: circleci run --help
