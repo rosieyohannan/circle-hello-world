@@ -6,7 +6,7 @@ commands:
       message:
         type: string
     steps:
-      - run: echo "Command received: << parameters.message >>"
+      - run: echo "Command received << parameters.message >>"
 
 jobs:
   daily-message:
