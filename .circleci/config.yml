@@ -4,10 +4,9 @@ commands:
   print:
     parameters:
       message:
-        default: "command parameter hello"
         type: string
     steps:
-      - run: echo << parameters.message >>
+      - run: echo "Command received: << parameters.message >>"
 
 jobs:
   daily-message:
@@ -16,14 +15,15 @@ jobs:
     resource_class: large
     parameters:
       message:
-        default: job parameter hello
         type: string
+        default: "Default job message"
     steps:
+      - run: echo "Job parameter: << parameters.message >>"
       - print:
-          message: Printing << parameters.message >>
+          message: "Passing to command: << parameters.message >>"
 
 workflows:
   my-workflow:
     jobs:
       - daily-message:
-         message: echo << parameters.message >>
+          message: "Hello from workflow!"
