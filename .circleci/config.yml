@@ -1,9 +1,29 @@
 version: 2.1
 
-orbs:
-    hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
+commands:
+  print:
+    parameters:
+      message:
+        default: "command parameter hello"
+        type: string
+    steps:
+      - run: echo << parameters.message >>
+
+jobs:
+  daily-message:
+    machine:
+      image: ubuntu-2004:current
+    resource_class: large
+    parameters:
+      message:
+        default: job parameter hello
+        type: string
+    steps:
+      - print:
+          message: Printing << parameters.message >>
 
 workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+  my-workflow:
+    jobs:
+      - daily-message:
+         message: echo << parameters.message >>
