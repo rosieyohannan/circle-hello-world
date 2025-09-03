@@ -5,31 +5,23 @@ commands:
     parameters:
       message:
         type: string
-      prefix:
-        type: string
-        default: "Command says"
     steps:
-      - run: echo "<< parameters.prefix >> << parameters.message >>"
+      - run: echo << parameters.message >>
 
 jobs:
   daily-message:
     machine:
       image: ubuntu-2004:current
+    resource_class: large
     parameters:
-      workflow_message:
+      message:
         type: string
-      job_message:
-        type: string
-        default: "This is the job's own message"
     steps:
-      - run: echo "Job received from workflow is << parameters.workflow_message >>"
-      - run: echo "Job's own parameter is << parameters.job_message >>"
       - print:
-          message: << parameters.workflow_message >>
-          prefix: "Command received from job"
+          message: Printing << parameters.message >>
 
 workflows:
   my-workflow:
     jobs:
       - daily-message:
-          workflow_message: "Hello from workflow!"
+         message: echo << parameters.message >>
