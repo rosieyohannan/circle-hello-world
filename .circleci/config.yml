@@ -18,9 +18,9 @@ jobs:
         type: string
         default: "Default job message"
     steps:
-      - run: echo "Job parameter: << parameters.message >>"
+      - run: echo "Job parameter << parameters.message >>"
       - print:
-          message: "Passing to command: << parameters.message >>"
+          message: "Passing to command << parameters.message >>"
 
 workflows:
   my-workflow:
