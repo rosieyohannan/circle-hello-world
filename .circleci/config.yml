@@ -12,9 +12,9 @@ jobs:
   daily-message:
     docker:
       - image: cimg/base:2025.09
-    parameters:
-      message:
-        type: string
+#    parameters:
+#      message:
+#        type: string
     steps:
       - print:
           message: job message
