@@ -16,10 +16,11 @@ jobs:
       message:
         type: string
     steps:
-      - print
+      - print:
+          message: job message
 
 workflows:
   my-workflow:
     jobs:
       - daily-message:
-          message: hellooo
+          message: workflow message
