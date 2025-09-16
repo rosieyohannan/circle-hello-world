@@ -4,22 +4,18 @@ commands:
   print:
     parameters:
       message:
-        default: hello
         type: string
     steps:
       - run: echo << parameters.message >>
 
 jobs:
-  daily-message:
-    machine:
-      image: ubuntu-2004:current
-    resource_class: large
+  docker:
+    - image: cimg/base:2025.09
     parameters:
       message:
         type: string
     steps:
-      - print:
-          message: Printing << parameters.message >>
+      - print
 
 workflows:
   my-workflow:
