@@ -24,4 +24,5 @@ jobs:
 workflows:
   my-workflow:
     jobs:
-      - daily-message
+      - daily-message:
+          message: hellooo
