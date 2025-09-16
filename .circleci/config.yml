@@ -1,17 +1,61 @@
 version: 2.1
 
 jobs:
-  deploy:
-    docker:
-      - image: cimg/base:current
-
+  build:
+    machine:
+      image: 'ubuntu-2004:current'
     steps:
+      - checkout
       - run:
-          name: "Deploy"
-          command: "exit $((RANDOM % 2))"
+          name: "Build step"
+          max_auto_reruns: 3
+          auto_rerun_delay: 1m
+          command: |
+            echo "This job will succeed"
+            echo "Building the project..."
+            sleep 2
+            echo "Build completed successfully"
+
+  test:
+    machine:
+      image: 'ubuntu-2004:current'
+    steps:
+      - checkout
+      - run:
+          name: "Run tests"
+          max_auto_reruns: 3
+          auto_rerun_delay: 1m
+          command: |
+            echo "Running tests..."
+            echo "Test 1: PASSED"
+            echo "Test 2: PASSED"
+            echo "Test 3: FAILED - This is intentional"
+            exit 1
+
+  deploy:
+    machine:
+      image: 'ubuntu-2004:current'
+    steps:
+      - checkout
+      - run:
+          name: "Deploy application"
+          max_auto_reruns: 3
+          auto_rerun_delay: 1m
+          command: |
+            echo "Deployment would happen here"
+            echo "Deploy completed successfully"
 
 workflows:
-  workflow:
-    max_auto_reruns: 5
+  version: 2
+  build-test-deploy:
     jobs:
-      - deploy
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
