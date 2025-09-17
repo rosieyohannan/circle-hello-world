@@ -15,7 +15,6 @@ jobs:
     resource_class: large
     parameters:
       message-2:
-        default: "hello job"
         type: string
     steps:
       - print:
@@ -25,4 +24,4 @@ workflows:
   my-workflow:
     jobs:
       - daily-message:
-         message: echo << parameters.message >>
+          message-2: "hello workflow"
