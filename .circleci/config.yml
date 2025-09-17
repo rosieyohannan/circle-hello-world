@@ -15,6 +15,7 @@ jobs:
     resource_class: large
     parameters:
       message:
+        default: "hello job"
         type: string
     steps:
       - print:
