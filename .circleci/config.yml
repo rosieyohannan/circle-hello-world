@@ -14,14 +14,14 @@ jobs:
       image: ubuntu-2004:current
     resource_class: large
     parameters:
-      message-2:
+      message:
         type: string
     steps:
       - print:
-          message: Printing << parameters.message-2 >>
+          message: Printing << parameters.message >>
 
 workflows:
   my-workflow:
     jobs:
       - daily-message:
-          message-2: "hello workflow"
+         message: << parameters.message >>
