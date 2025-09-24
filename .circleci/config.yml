@@ -11,6 +11,6 @@ jobs:
 
 workflows:
   my-workflow:
-    when: <<pipeline.event.name>> == "pull_request"
+    when: pipeline.event.name == "pull_request"
     jobs:
       - daily-message
