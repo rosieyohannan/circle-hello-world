@@ -6,7 +6,6 @@ jobs:
       - image: cimg/base:2025.09
     steps:
       - run: echo "Hello"
-      - run: echo <<pipeline.event.github.pull_request.base.ref>>
 
 workflows:
   my-workflow:
