@@ -13,3 +13,7 @@ workflows:
   my-workflow:
     jobs:
       - daily-message
+  my-workflow-two:
+    when: pipeline.event.action == "pull_request"
+    jobs:
+      - daily-message
