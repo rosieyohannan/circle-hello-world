@@ -1,9 +1,96 @@
+# Test config to verify the PostgreSQL client version fix documented in databases.adoc
+#
+# Usage: Copy this file to .circleci/config.yml in a test project and run a pipeline
+#
+# This config demonstrates:
+# 1. The version mismatch error when using default postgresql-client
+# 2. The fix: installing matching client version from PostgreSQL APT repo
+# 3. Verification that pg_dump works correctly after the fix
+
 version: 2.1
 
-orbs:
-    hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
+jobs:
+  test-postgres-fix:
+    docker:
+      # Primary container - Python image (could be any cimg/* image)
+      - image: cimg/python:3.10
+        environment:
+          TEST_DATABASE_URL: postgresql://postgres@localhost/circle_test
+
+      # Service container - PostgreSQL 15 (newer version to trigger mismatch)
+      - image: cimg/postgres:15.0
+        environment:
+          POSTGRES_USER: postgres
+
+    steps:
+      - run:
+          name: Wait for PostgreSQL to be ready
+          command: |
+            echo "Waiting for PostgreSQL..."
+            for i in {1..30}; do
+              pg_isready -h localhost -U postgres && break
+              echo "Attempt $i: PostgreSQL not ready yet..."
+              sleep 1
+            done
+            echo "PostgreSQL is ready!"
+
+      - run:
+          name: Show default pg_dump version (demonstrates the problem)
+          command: |
+            echo "=============================================="
+            echo "STEP 1: Demonstrate the version mismatch error"
+            echo "=============================================="
+            echo ""
+            echo "Default pg_dump version installed in primary container:"
+            pg_dump --version
+            echo ""
+            echo "PostgreSQL server version in service container:"
+            psql -h localhost -U postgres -t -c "SHOW server_version;"
+            echo ""
+            echo "Attempting pg_dump (this may fail with version mismatch)..."
+            pg_dump -h localhost -U postgres --schema-only circle_test || echo "pg_dump failed as expected due to version mismatch"
+
+      - run:
+          name: Apply fix - Install matching PostgreSQL 15 client
+          command: |
+            echo "=============================================="
+            echo "STEP 2: Apply the documented fix"
+            echo "=============================================="
+            echo ""
+            echo "Adding PostgreSQL APT repository..."
+            sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+            wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+            sudo apt-get update
+            echo ""
+            echo "Installing postgresql-client-15..."
+            sudo apt-get install -y postgresql-client-15
+            echo ""
+            echo "Available PostgreSQL versions in /usr/lib/postgresql/:"
+            ls -l /usr/lib/postgresql/
+
+      - run:
+          name: Add PostgreSQL 15 binaries to PATH
+          command: echo 'export PATH=/usr/lib/postgresql/15/bin:"$PATH"' >> "$BASH_ENV"
+
+      - run:
+          name: Verify fix - pg_dump now works correctly
+          command: |
+            echo "=============================================="
+            echo "STEP 3: Verify the fix works"
+            echo "=============================================="
+            echo ""
+            echo "Updated pg_dump version (should be 15.x):"
+            pg_dump --version
+            echo ""
+            echo "PostgreSQL server version:"
+            psql -h localhost -U postgres -t -c "SHOW server_version;"
+            echo ""
+            echo "Testing pg_dump (should succeed now)..."
+            pg_dump -h localhost -U postgres --schema-only circle_test
+            echo ""
+            echo "SUCCESS! pg_dump works correctly with matching versions."
 
 workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+  test-database-docs:
+    jobs:
+      - test-postgres-fix
