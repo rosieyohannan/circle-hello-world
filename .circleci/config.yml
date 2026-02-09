@@ -8,7 +8,7 @@ jobs:
     steps:
       - restore_cache:
           keys:
-            - attempt-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+            - attempt-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: "Deploy"
           command: |
@@ -26,7 +26,7 @@ jobs:
             fi
             echo "Success on attempt $ATTEMPT!"
       - save_cache:
-          key: attempt-{{ .Environment.CIRCLE_WORKFLOW_ID }}-{{ epoch }}
+          key: attempt-{{ .Environment.CIRCLE_SHA1 }}-{{ epoch }}
           paths:
             - attempt.txt
           when: always
