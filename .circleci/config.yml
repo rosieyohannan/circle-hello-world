@@ -6,9 +6,30 @@ jobs:
       - image: cimg/base:current
 
     steps:
+      - restore_cache:
+          keys:
+            - attempt-{{ .Environment.CIRCLE_WORKFLOW_ID }}
       - run:
           name: "Deploy"
-          command: "exit $((RANDOM % 2))"
+          command: |
+            if [ -f attempt.txt ]; then
+              ATTEMPT=$(($(cat attempt.txt) + 1))
+            else
+              ATTEMPT=1
+            fi
+            echo $ATTEMPT > attempt.txt
+            echo "Attempt: $ATTEMPT"
+
+            if [ $ATTEMPT -le 2 ]; then
+              echo "Failing intentionally (attempt $ATTEMPT of 3)"
+              exit 1
+            fi
+            echo "Success on attempt $ATTEMPT!"
+      - save_cache:
+          key: attempt-{{ .Environment.CIRCLE_WORKFLOW_ID }}-{{ epoch }}
+          paths:
+            - attempt.txt
+          when: always
 
 workflows:
   workflow:
