@@ -21,7 +21,7 @@ jobs:
             echo "Attempt: $ATTEMPT"
 
             if [ $ATTEMPT -le 2 ]; then
-              echo "Failing intentionally (attempt $ATTEMPT of 3)"
+              echo "Fail intentionally (attempt $ATTEMPT of 3)"
               exit 1
             fi
             echo "Success on attempt $ATTEMPT!"
