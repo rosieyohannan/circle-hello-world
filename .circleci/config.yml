@@ -5,6 +5,7 @@ jobs:
     docker:
       - image: cimg/base:current
     steps:
+      - checkout
       - run: echo "Hello, world!"
       - run:
           name: "Flaky step with auto-rerun"
