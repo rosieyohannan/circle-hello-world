@@ -1,9 +1,24 @@
 version: 2.1
 
-orbs:
-    hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
-
 workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+  test-workflow:
+    jobs:
+      - run-tests
+
+jobs:
+  run-tests:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          name: Install pytest
+          command: pip install pytest
+      - run:
+          name: Run tests
+          command: |
+            mkdir test-results
+            TEST_FILES=$(circleci tests glob "test_*.py")
+            echo "$TEST_FILES" | circleci tests run --command="xargs pytest -o junit_family=legacy --junitxml=test-results/junit.xml" --verbose
+      - store_test_results:
+          path: test-results
