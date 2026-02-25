@@ -6,4 +6,4 @@ def test_passing_two():
 
 def test_will_fail():
     # Change this to make it fail for your screenshot
-    assert 1 + 1 == 2  # Change to == 3 to make it fail
+    assert 1 + 1 == 3  # Change to == 3 to make it fail
