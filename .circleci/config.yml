@@ -3,7 +3,7 @@ jobs:
   # running commands on a basic image
   Hello-World:
     docker:
-      - image: cimg/base:2021.04
+      - image: cimg/base:2026.03
     steps:
       - run:
           name: Saying Hello
@@ -13,7 +13,7 @@ jobs:
   # fetching code from the repo
   Fetch-Code:
     docker:
-      - image: cimg/base:2021.04
+      - image: cimg/base:2026.03
     steps:
       - checkout
       - run:
@@ -24,7 +24,7 @@ jobs:
   # running a node container
   Using-Node:
     docker:
-      - image: cimg/node:17.2
+      - image: cimg/node:25.8.1
     steps:
       - run:
           name: Running the Node Container
