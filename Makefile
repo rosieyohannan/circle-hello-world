@@ -1,2 +1,2 @@
-  all:
-    gcc -o dump main.c
+all:
+	gcc -o dump main.c
