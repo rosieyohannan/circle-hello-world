@@ -93,10 +93,14 @@ workflows:
             - deploy:
               - failed
               - canceled
-schedule:
+
+  schedule:
     triggers:
       - schedule:
-          cron: "*5 * * * *"
-          filters: pipeline.git.branch == "schedule"
+          cron: "0 * * * *"
+          filters:
+            branches:
+              only:
+                - schedule
     jobs:
       - build
