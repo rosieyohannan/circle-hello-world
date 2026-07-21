@@ -93,7 +93,7 @@ workflows:
             - deploy:
               - failed
               - canceled
-schedule: `
+schedule:
     triggers:
       - schedule:
           cron: "*5 * * * *"
