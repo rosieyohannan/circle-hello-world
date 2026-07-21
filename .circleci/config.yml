@@ -1,9 +1,102 @@
 version: 2.1
 
-orbs:
-    hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
+parameters:
+  run_deploy_workflow:
+    type: boolean
+    default: false
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          name: Build application
+          command: echo "Building application..."
+
+  lint:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          name: Run linter
+          command: echo "Running linter checks..."
+
+  test:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command: echo "Running test suite..."
+
+  deploy:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          name: Deploy application
+          command: echo "Deploying to production..."
+
+  cleanup:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - run:
+          name: Cleanup resources
+          command: echo "Cleaning up resources..."
+
+  notify-failure:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - run:
+          name: Send failure notification
+          command: echo "Deploy failed - sending notification..."
 
 workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+  # This workflow runs on every commit
+  build_and_test:
+    jobs:
+      - build
+      - lint:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
+
+  # This workflow only runs when the parameter is true
+  deploy:
+    when: << pipeline.parameters.run_deploy_workflow >>
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - hold:
+          type: approval
+          requires:
+            - test
+      - deploy:
+          requires:
+            - hold
+      - cleanup:
+          requires:
+            - deploy: terminal
+      - notify-failure:
+          requires:
+            - deploy:
+              - failed
+              - canceled
+schedule:
+    triggers:
+      - schedule:
+          cron: "*5 * * * *"
+          filters: pipeline.git.branch == "schedule"
+    jobs:
+      - build
