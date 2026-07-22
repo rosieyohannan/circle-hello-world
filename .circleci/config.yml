@@ -98,9 +98,6 @@ workflows:
     triggers:
       - schedule:
           cron: "0 * * * *"
-          filters:
-            branches:
-              only:
-                - schedule
+          filters: pipeline.git.branch == "master"
     jobs:
       - build
