@@ -96,7 +96,7 @@ workflows:
 schedule:
     triggers:
       - schedule:
-          cron: "*5 * * * *"
+          cron: "0 * * * *"
           filters: pipeline.git.branch == "schedule"
     jobs:
       - build
