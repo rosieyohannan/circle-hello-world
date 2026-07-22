@@ -97,6 +97,9 @@ schedule:
     triggers:
       - schedule:
           cron: "0 * * * *"
-          filters: pipeline.git.branch == "schedule"
+          filters:
+            branches:
+              only:
+                - schedule
     jobs:
       - build
