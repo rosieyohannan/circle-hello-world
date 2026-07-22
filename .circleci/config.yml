@@ -101,6 +101,6 @@ workflows:
           filters:
             branches:
               only:
-                - schedule
+                - master
     jobs:
       - build
