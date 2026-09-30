@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Run tests
           command: echo "Running test suite..."
-      - run: circleci tests split --help
+      - run: circleci tests run --help
 
   deploy:
     docker:
