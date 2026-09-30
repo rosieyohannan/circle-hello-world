@@ -32,6 +32,7 @@ jobs:
       - run:
           name: Run tests
           command: echo "Running test suite..."
+      - run: circleci tests --help
 
   deploy:
     docker:
@@ -93,11 +94,3 @@ workflows:
             - deploy:
               - failed
               - canceled
-
-  schedule:
-    triggers:
-      - schedule:
-          cron: "0 * * * *"
-          filters: pipeline.git.branch == "master"
-    jobs:
-      - build
