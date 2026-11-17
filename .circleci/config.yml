@@ -1,19 +1,35 @@
 version: 2.1
 
 jobs:
-  ctx-check:
+  noop:
     docker:
       - image: cimg/base:current
     steps:
-      - run:
-          name: Context available
-          command: |
-            echo "context test loaded"
-            echo "branch=$CIRCLE_BRANCH"
-            test -n "$test" && echo "env var from context is set"
+      - run: echo "ran"
 
 workflows:
-  w:
+  branch-is-empty-string:
+    when: pipeline.git.branch == ""
     jobs:
-      - ctx-check:
-          context: test
+      - noop:
+          filters: 1 == 1
+  tag-is-empty-string:
+    when: pipeline.git.tag == ""
+    jobs:
+      - noop:
+          filters: 1 == 1
+  tag-or-fallback:
+    when: (pipeline.git.tag or "none") == "none"
+    jobs:
+      - noop:
+          filters: 1 == 1
+  branch-or-fallback:
+    when: (pipeline.git.branch or "none") == "none"
+    jobs:
+      - noop:
+          filters: 1 == 1
+  always:
+    when: true
+    jobs:
+      - noop:
+          filters: 1 == 1
